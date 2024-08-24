@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiList, FiDelete } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiType, FiList, FiDelete } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
@@ -10,8 +10,6 @@ const InternalLinkingTool = () => {
   const [error, setError] = useState('');
   const [showToolbar, setShowToolbar] = useState(false);
   const [selectedElement, setSelectedElement] = useState(null);
-  
-  const contentEditableRef = useRef(null);
 
   const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
 
@@ -27,27 +25,11 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
-      // Remove classes, styles, and ids from elements
-      node.removeAttribute('class');
-      node.removeAttribute('style');
-      node.removeAttribute('id');
-      [...node.attributes].forEach(attr => {
-        if (attr.name.startsWith('data-')) {
-          node.removeAttribute(attr.name);
-        }
-      });
       node.childNodes.forEach(sanitizeNode);
     };
 
     div.childNodes.forEach(sanitizeNode);
     return div.innerHTML;
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text/html');
-    const sanitizedData = sanitizeHtml(pastedData);
-    document.execCommand('insertHTML', false, sanitizedData);
   };
 
   const handleGenerateKeywords = () => {
@@ -116,7 +98,7 @@ const InternalLinkingTool = () => {
 
   const handleToolbarAction = (action) => {
     if (!selectedElement) return;
-
+    
     switch (action) {
       case 'bold':
         document.execCommand('bold');
@@ -137,9 +119,7 @@ const InternalLinkingTool = () => {
         document.execCommand('insertOrderedList');
         break;
       case 'remove':
-        if (selectedElement) {
-          selectedElement.remove();
-        }
+        selectedElement.remove();
         setSelectedElement(null);
         setShowToolbar(false);
         break;
@@ -167,15 +147,6 @@ const InternalLinkingTool = () => {
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange);
     };
-  }, []);
-
-  useEffect(() => {
-    if (contentEditableRef.current) {
-      contentEditableRef.current.addEventListener('paste', handlePaste);
-      return () => {
-        contentEditableRef.current.removeEventListener('paste', handlePaste);
-      };
-    }
   }, []);
 
   return (
@@ -225,7 +196,6 @@ const InternalLinkingTool = () => {
             <label className="block mb-2 text-gray-700">Input Text:</label>
             <div
               contentEditable="true"
-              ref={contentEditableRef}
               onInput={handleTextChange}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               style={{ minHeight: '150px' }}
