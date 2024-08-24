@@ -1,16 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Input,
-  Textarea,
-  VStack,
-  Heading,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from '@chakra-ui/react';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
@@ -68,78 +56,105 @@ const InternalLinkingTool = () => {
   };
 
   return (
-    <Box className="min-h-screen bg-gray-50 p-8 flex flex-col items-center">
-      <Box className="max-w-2xl w-full bg-white p-6 rounded-lg shadow-md">
-        <Heading className="text-2xl font-bold mb-6 text-center">Internal Linking Tool</Heading>
-
-        {/* URL Input and Keyword Generation */}
-        <VStack spacing={4} className="mb-6">
-          <Input
+    <div className="p-4 max-w-4xl mx-auto">
+      {/* URL Input and Keyword Generation */}
+      <div className="mb-4 p-6 bg-white shadow-md rounded-lg">
+        <h2 className="text-xl font-semibold mb-4">URL Input and Keyword Generation</h2>
+        <div className="mb-4">
+          <input
+            type="text"
             placeholder="Enter URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            size="lg"
-            className="w-full"
+            className="w-full p-2 border border-gray-300 rounded mb-2"
           />
-          <Button colorScheme="blue" onClick={handleGenerateKeywords} className="w-full">
+          <button
+            onClick={handleGenerateKeywords}
+            className="w-full p-2 bg-blue-500 text-white rounded"
+          >
             Generate Keywords
-          </Button>
-        </VStack>
+          </button>
+        </div>
+      </div>
 
-        {/* CSV Upload and Text Processing */}
-        <VStack spacing={4}>
-          <Input
+      {/* Keyword URL Linker */}
+      <div className="p-6 bg-white shadow-md rounded-lg">
+        <h2 className="text-xl font-semibold mb-4">Keyword URL Linker</h2>
+        <div className="mb-4">
+          <input
             type="file"
             accept=".csv"
             onChange={handleFileUpload}
-            size="lg"
-            className="w-full"
+            className="w-full p-2 border border-gray-300 rounded mb-2"
           />
-          <Input
+          <input
+            type="text"
             placeholder="Exclude URL"
             value={excludeUrl}
             onChange={(e) => setExcludeUrl(e.target.value)}
-            size="lg"
-            className="w-full"
+            className="w-full p-2 border border-gray-300 rounded mb-2"
           />
-          <Textarea
+          <textarea
             placeholder="Input Text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            size="lg"
-            className="w-full"
-            resize="vertical"
+            className="w-full p-2 border border-gray-300 rounded mb-2"
+            rows="4"
           />
-          <div className="flex space-x-2 w-full">
-            <Button colorScheme="blue" onClick={handleProcessText} className="w-1/3">
+          <div className="flex space-x-2 mb-4">
+            <button
+              onClick={handleProcessText}
+              className="w-1/3 p-2 bg-blue-500 text-white rounded"
+            >
               Process
-            </Button>
-            <Button variant="outline" onClick={clearText} className="w-1/3">
+            </button>
+            <button
+              onClick={clearText}
+              className="w-1/3 p-2 bg-gray-200 text-gray-700 rounded"
+            >
               Clear
-            </Button>
-            <Button colorScheme="green" onClick={copyToClipboard} className="w-1/3">
+            </button>
+            <button
+              onClick={copyToClipboard}
+              className="w-1/3 p-2 bg-green-500 text-white rounded"
+            >
               Copy
-            </Button>
+            </button>
           </div>
-          <Textarea
+          <textarea
             placeholder="Output Text with Hyperlinks"
             value={outputText}
             readOnly
-            size="lg"
-            className="w-full mt-4"
-            resize="vertical"
-            height="150px"
+            className="w-full p-2 border border-gray-300 rounded"
+            rows="4"
           />
           {error && (
-            <Alert status="error" className="mt-4">
-              <AlertIcon />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
+              <div className="flex items-center">
+                <svg
+                  className="h-6 w-6 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M18.364 5.636l-12.728 12.728m12.728 0L5.636 5.636"
+                  />
+                </svg>
+                <span className="ml-2 text-red-600 font-semibold">Error</span>
+              </div>
+              <div className="mt-2 text-red-700">
+                {error}
+              </div>
+            </div>
           )}
-        </VStack>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 
