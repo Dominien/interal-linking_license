@@ -23,11 +23,27 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
+
+      // Remove all inline styles
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        node.removeAttribute('style');
+      }
+
       node.childNodes.forEach(sanitizeNode);
     };
 
     div.childNodes.forEach(sanitizeNode);
     return div.innerHTML;
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
+
+    const sanitizedHtml = sanitizeHtml(pastedData);
+    document.execCommand('insertHTML', false, sanitizedHtml);
   };
 
   const handleGenerateKeywords = () => {
@@ -142,6 +158,7 @@ const InternalLinkingTool = () => {
             <div
               contentEditable="true"
               onInput={handleTextChange}
+              onPaste={handlePaste}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
