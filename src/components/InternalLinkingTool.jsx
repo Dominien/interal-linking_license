@@ -57,110 +57,113 @@ const InternalLinkingTool = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-gray-100">
-      {/* URL Input and Keyword Generation */}
-      <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Enter URL"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4"
-          />
-          <button
-            onClick={handleGenerateKeywords}
-            className="w-full p-3 bg-black text-white rounded flex items-center justify-center"
-          >
-            <FiPlay className="mr-2" />
-            Generate Keywords
-          </button>
-        </div>
-      </div>
-
-      {/* Keyword URL Linker */}
-      <div className="p-8 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
-        <div className="mb-4">
-          <label className="block mb-2 text-gray-700">Upload CSV File:</label>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileUpload}
-            className="w-full p-3 border border-gray-300 rounded mb-4"
-          />
-          <label className="block mb-2 text-gray-700">Exclude URL:</label>
-          <input
-            type="text"
-            placeholder="Enter URL to Exclude"
-            value={excludeUrl}
-            onChange={(e) => setExcludeUrl(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4"
-          />
-          <label className="block mb-2 text-gray-700">Input Text:</label>
-          <textarea
-            placeholder="Paste your content here"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4"
-            rows="6"
-          />
-          <div className="flex space-x-4 mb-4">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* URL Input and Keyword Generation */}
+        <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
+          <p className="mb-4 text-gray-700">Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Enter URL"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
+            />
             <button
-              onClick={handleProcessText}
-              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
+              onClick={handleGenerateKeywords}
+              className="w-full p-3 bg-black text-white rounded flex items-center justify-center"
             >
               <FiPlay className="mr-2" />
-              Process
-            </button>
-            <button
-              onClick={clearText}
-              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
-            >
-              <FiRefreshCcw className="mr-2" />
-              Clear
-            </button>
-            <button
-              onClick={copyToClipboard}
-              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
-            >
-              <FiClipboard className="mr-2" />
-              Copy
+              Generate Keywords
             </button>
           </div>
-          <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
-          <textarea
-            placeholder="Your processed content will appear here"
-            value={outputText}
-            readOnly
-            className="w-full p-3 border border-gray-300 rounded mb-4"
-            rows="6"
-          />
-          {error && (
-            <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
-              <div className="flex items-center">
-                <svg
-                  className="h-6 w-6 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M18.364 5.636l-12.728 12.728m12.728 0L5.636 5.636"
-                  />
-                </svg>
-                <span className="ml-2 text-red-600 font-semibold">Error</span>
-              </div>
-              <div className="mt-2 text-red-700">
-                {error}
-              </div>
+        </div>
+
+        {/* Keyword URL Linker */}
+        <div className="p-8 bg-white shadow-lg rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700">Upload CSV File:</label>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2 text-gray-700">Exclude URL:</label>
+            <input
+              type="text"
+              placeholder="Enter URL to Exclude"
+              value={excludeUrl}
+              onChange={(e) => setExcludeUrl(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2 text-gray-700">Input Text:</label>
+            <textarea
+              placeholder="Paste your content here"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
+              rows="6"
+            />
+            <div className="flex space-x-4 mb-4">
+              <button
+                onClick={handleProcessText}
+                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
+              >
+                <FiPlay className="mr-2" />
+                Process
+              </button>
+              <button
+                onClick={clearText}
+                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
+              >
+                <FiRefreshCcw className="mr-2" />
+                Clear
+              </button>
+              <button
+                onClick={copyToClipboard}
+                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
+              >
+                <FiClipboard className="mr-2" />
+                Copy
+              </button>
             </div>
-          )}
+            <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
+            <textarea
+              placeholder="Your processed content will appear here"
+              value={outputText}
+              readOnly
+              className="w-full p-3 border border-gray-300 rounded mb-4"
+              rows="6"
+            />
+            {error && (
+              <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
+                <div className="flex items-center">
+                  <svg
+                    className="h-6 w-6 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M18.364 5.636l-12.728 12.728m12.728 0L5.636 5.636"
+                    />
+                  </svg>
+                  <span className="ml-2 text-red-600 font-semibold">Error</span>
+                </div>
+                <div className="mt-2 text-red-700">
+                  {error}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
