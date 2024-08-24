@@ -1,10 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ChakraProvider } from '@chakra-ui/react';
+import App from './App';
+import './index.css'; // Ensure Tailwind CSS or any custom styles are included if needed
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.render(
+  <ChakraProvider>
     <App />
-  </StrictMode>,
-)
+  </ChakraProvider>,
+  document.getElementById('root')
+);

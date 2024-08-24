@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './components/login';
-import './index.css'; // or './tailwind.css'
+import React from 'react';
 import './App.css';
+import Login from './components/Login'; // Correct import path
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    console.log('User logged in!');
+    // Additional logic after a successful login can be added here
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={isLoggedIn ? <Navigate to="/tool" /> : <Login onLogin={handleLogin} />} />
-        <Route path="/tool" element={isLoggedIn ? <div>Your Tool Here</div> : <Navigate to="/" />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Login onLogin={handleLogin} />
+    </div>
   );
 }
 
