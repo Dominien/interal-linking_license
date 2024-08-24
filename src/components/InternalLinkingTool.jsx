@@ -25,9 +25,11 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
-      // Remove classes and styles from elements
+      // Remove classes, styles, and ids from elements
       node.removeAttribute('class');
       node.removeAttribute('style');
+      node.removeAttribute('id');
+      node.removeAttribute('data-*');
       node.childNodes.forEach(sanitizeNode);
     };
 
@@ -211,7 +213,7 @@ const InternalLinkingTool = () => {
               onInput={handleTextChange}
               onPaste={handlePaste}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
-              style={{ minHeight: '150px' }}
+              style={{ minHeight: '150px', all: 'initial' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
             {showToolbar && (
@@ -258,7 +260,7 @@ const InternalLinkingTool = () => {
               contentEditable="true"
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               dangerouslySetInnerHTML={{ __html: outputHtml }}
-              style={{ minHeight: '150px' }}
+              style={{ minHeight: '150px', all: 'initial' }}
             />
             {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
