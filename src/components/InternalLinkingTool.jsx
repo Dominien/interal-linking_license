@@ -4,9 +4,9 @@ import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputHtml, setInputHtml] = useState(''); // Renamed to inputHtml to handle HTML
+  const [inputHtml, setInputHtml] = useState(''); // Handling HTML content
   const [excludeUrl, setExcludeUrl] = useState('');
-  const [outputHtml, setOutputHtml] = useState(''); // Renamed to outputHtml to handle HTML
+  const [outputHtml, setOutputHtml] = useState(''); // Handling HTML content
   const [error, setError] = useState('');
 
   const handleGenerateKeywords = () => {
@@ -17,7 +17,7 @@ const InternalLinkingTool = () => {
 
     // Mock implementation for generating keywords
     const generatedKeywords = ['keyword1', 'keyword2', 'keyword3']; // Example
-    console.log("Generated Keywords:", generatedKeywords);
+    console.log('Generated Keywords:', generatedKeywords);
 
     setError('');
   };
@@ -38,7 +38,10 @@ const InternalLinkingTool = () => {
     }
 
     // Mock implementation for processing text
-    const processedHtml = inputHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
+    let processedHtml = inputHtml;
+
+    // Simulating keyword replacement with links
+    processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
     setError('');
   };
@@ -56,7 +59,7 @@ const InternalLinkingTool = () => {
     document.body.appendChild(tempElement);
 
     const range = document.createRange();
-    range.selectNode(tempElement);
+    range.selectNodeContents(tempElement);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
@@ -77,7 +80,9 @@ const InternalLinkingTool = () => {
         {/* URL Input and Keyword Generation */}
         <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
-          <p className="mb-4 text-gray-700">Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
+          <p className="mb-4 text-gray-700">
+            Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.
+          </p>
           <div className="mb-4">
             <input
               type="text"
@@ -116,12 +121,12 @@ const InternalLinkingTool = () => {
               className="w-full p-3 border border-gray-300 rounded mb-4"
             />
             <label className="block mb-2 text-gray-700">Input Text:</label>
-            <textarea
-              placeholder="Paste your content here"
-              value={inputHtml}  // Now handling HTML content
-              onChange={(e) => setInputHtml(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded mb-4"
-              rows="6"
+            <div
+              contentEditable="true"
+              onInput={(e) => setInputHtml(e.currentTarget.innerHTML)}
+              className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
+              style={{ minHeight: '150px' }}
+              dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
             <div className="flex space-x-4 mb-4">
               <button
@@ -147,12 +152,10 @@ const InternalLinkingTool = () => {
               </button>
             </div>
             <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
-            <textarea
-              placeholder="Your processed content will appear here"
-              value={outputHtml}  // Now handling HTML content
-              readOnly
-              className="w-full p-3 border border-gray-300 rounded mb-4"
-              rows="6"
+            <div
+              className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
+              style={{ minHeight: '150px' }}
+              dangerouslySetInnerHTML={{ __html: outputHtml }}
             />
             {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
@@ -173,9 +176,7 @@ const InternalLinkingTool = () => {
                   </svg>
                   <span className="ml-2 text-red-600 font-semibold">Error</span>
                 </div>
-                <div className="mt-2 text-red-700">
-                  {error}
-                </div>
+                <div className="mt-2 text-red-700">{error}</div>
               </div>
             )}
           </div>
