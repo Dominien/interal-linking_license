@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiType, FiList, FiDelete } from 'react-icons/fi';
+import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiList, FiDelete } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
@@ -25,6 +25,8 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
+      // Remove classes from elements
+      node.removeAttribute('class');
       node.childNodes.forEach(sanitizeNode);
     };
 
@@ -281,3 +283,5 @@ const InternalLinkingTool = () => {
 };
 
 export default InternalLinkingTool;
+
+             
