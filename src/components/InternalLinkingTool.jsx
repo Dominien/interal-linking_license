@@ -162,92 +162,109 @@ const InternalLinkingTool = () => {
   }, []);
 
   return (
-    <div>
-      <div>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-4xl mx-auto">
         {/* URL Input and Keyword Generation */}
-        <div>
-          <h2>URL Input and Keyword Generation</h2>
-          <p>Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
-          <div>
+        <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
+          <p className="mb-4 text-gray-700">Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
+          <div className="mb-4">
             <input
               type="text"
               placeholder="Enter URL"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
             />
-            <button onClick={handleGenerateKeywords}>
-              <FiPlay />
+            <button
+              onClick={handleGenerateKeywords}
+              className="w-full p-3 bg-black text-white rounded flex items-center justify-center"
+            >
+              <FiPlay className="mr-2" />
               Generate Keywords
             </button>
           </div>
         </div>
 
         {/* Keyword URL Linker */}
-        <div>
-          <h2>Keyword URL Linker</h2>
-          <div>
-            <label>Upload CSV File:</label>
+        <div className="p-8 bg-white shadow-lg rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700">Upload CSV File:</label>
             <input
               type="file"
               accept=".csv"
               onChange={handleFileUpload}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
             />
-            <label>Exclude URL:</label>
+            <label className="block mb-2 text-gray-700">Exclude URL:</label>
             <input
               type="text"
               placeholder="Enter URL to Exclude"
               value={excludeUrl}
               onChange={(e) => setExcludeUrl(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-4"
             />
-            <label>Input Text:</label>
+            <label className="block mb-2 text-gray-700">Input Text:</label>
             <div
               contentEditable="true"
               onInput={handleTextChange}
               onPaste={handlePaste}
+              className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
+              style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
             {showToolbar && (
-              <div>
-                <button onClick={() => handleToolbarAction('bold')}>
+              <div className="flex space-x-2 mb-4">
+                <button onClick={() => handleToolbarAction('bold')} className="p-2 bg-black text-white rounded">
                   <FiBold />
                 </button>
-                <button onClick={() => handleToolbarAction('h1')}>H1</button>
-                <button onClick={() => handleToolbarAction('h2')}>H2</button>
-                <button onClick={() => handleToolbarAction('h3')}>H3</button>
-                <button onClick={() => handleToolbarAction('ul')}>
+                <button onClick={() => handleToolbarAction('h1')} className="p-2 bg-black text-white rounded">
+                  H1
+                </button>
+                <button onClick={() => handleToolbarAction('h2')} className="p-2 bg-black text-white rounded">
+                  H2
+                </button>
+                <button onClick={() => handleToolbarAction('h3')} className="p-2 bg-black text-white rounded">
+                  H3
+                </button>
+                <button onClick={() => handleToolbarAction('ul')} className="p-2 bg-black text-white rounded">
                   <FiList />
                 </button>
-                <button onClick={() => handleToolbarAction('ol')}>
+                <button onClick={() => handleToolbarAction('ol')} className="p-2 bg-black text-white rounded">
                   <FiList />
                 </button>
-                <button onClick={() => handleToolbarAction('remove')}>
+                <button onClick={() => handleToolbarAction('remove')} className="p-2 bg-red-500 text-white rounded">
                   <FiDelete />
                 </button>
               </div>
             )}
-            <div>
-              <button onClick={handleProcessText}>
-                <FiPlay />
+            <div className="flex space-x-4 mb-4">
+              <button onClick={handleProcessText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
+                <FiPlay className="mr-2" />
                 Process
               </button>
-              <button onClick={clearText}>
-                <FiRefreshCcw />
+              <button onClick={clearText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
+                <FiRefreshCcw className="mr-2" />
                 Clear
               </button>
-              <button onClick={copyToClipboard}>
-                <FiClipboard />
+              <button onClick={copyToClipboard} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
+                <FiClipboard className="mr-2" />
                 Copy
               </button>
             </div>
-            <label>Output Text with Hyperlinks:</label>
+            <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
             <div
               contentEditable="true"
+              className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               dangerouslySetInnerHTML={{ __html: outputHtml }}
+              style={{ minHeight: '150px' }}
             />
             {error && (
-              <div>
-                <div>
+              <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
+                <div className="flex items-center">
                   <svg
+                    className="h-6 w-6 text-red-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -260,9 +277,11 @@ const InternalLinkingTool = () => {
                       d="M18.364 5.636l-12.728 12.728m12.728 0L5.636 5.636"
                     />
                   </svg>
-                  <span>Error</span>
+                  <span className="ml-2 text-red-600 font-semibold">Error</span>
                 </div>
-                <div>{error}</div>
+                <div className="mt-2 text-red-700">
+                  {error}
+                </div>
               </div>
             )}
           </div>
