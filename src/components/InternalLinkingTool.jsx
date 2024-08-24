@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
@@ -20,7 +21,6 @@ const InternalLinkingTool = () => {
 
     setError('');
   };
-  
 
   const handleFileUpload = (e) => {
     setCsvFile(e.target.files[0]);
@@ -57,77 +57,85 @@ const InternalLinkingTool = () => {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto bg-gray-100">
       {/* URL Input and Keyword Generation */}
-      <div className="mb-4 p-6 bg-white shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">URL Input and Keyword Generation</h2>
+      <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
         <div className="mb-4">
           <input
             type="text"
             placeholder="Enter URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-2"
+            className="w-full p-3 border border-gray-300 rounded mb-4"
           />
           <button
             onClick={handleGenerateKeywords}
-            className="w-full p-2 bg-blue-500 text-white rounded"
+            className="w-full p-3 bg-black text-white rounded flex items-center justify-center"
           >
+            <FiPlay className="mr-2" />
             Generate Keywords
           </button>
         </div>
       </div>
 
       {/* Keyword URL Linker */}
-      <div className="p-6 bg-white shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Keyword URL Linker</h2>
+      <div className="p-8 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
         <div className="mb-4">
+          <label className="block mb-2 text-gray-700">Upload CSV File:</label>
           <input
             type="file"
             accept=".csv"
             onChange={handleFileUpload}
-            className="w-full p-2 border border-gray-300 rounded mb-2"
+            className="w-full p-3 border border-gray-300 rounded mb-4"
           />
+          <label className="block mb-2 text-gray-700">Exclude URL:</label>
           <input
             type="text"
-            placeholder="Exclude URL"
+            placeholder="Enter URL to Exclude"
             value={excludeUrl}
             onChange={(e) => setExcludeUrl(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-2"
+            className="w-full p-3 border border-gray-300 rounded mb-4"
           />
+          <label className="block mb-2 text-gray-700">Input Text:</label>
           <textarea
-            placeholder="Input Text"
+            placeholder="Paste your content here"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-2"
-            rows="4"
+            className="w-full p-3 border border-gray-300 rounded mb-4"
+            rows="6"
           />
-          <div className="flex space-x-2 mb-4">
+          <div className="flex space-x-4 mb-4">
             <button
               onClick={handleProcessText}
-              className="w-1/3 p-2 bg-blue-500 text-white rounded"
+              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
             >
+              <FiPlay className="mr-2" />
               Process
             </button>
             <button
               onClick={clearText}
-              className="w-1/3 p-2 bg-gray-200 text-gray-700 rounded"
+              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
             >
+              <FiRefreshCcw className="mr-2" />
               Clear
             </button>
             <button
               onClick={copyToClipboard}
-              className="w-1/3 p-2 bg-green-500 text-white rounded"
+              className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
             >
+              <FiClipboard className="mr-2" />
               Copy
             </button>
           </div>
+          <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
           <textarea
-            placeholder="Output Text with Hyperlinks"
+            placeholder="Your processed content will appear here"
             value={outputText}
             readOnly
-            className="w-full p-2 border border-gray-300 rounded"
-            rows="4"
+            className="w-full p-3 border border-gray-300 rounded mb-4"
+            rows="6"
           />
           {error && (
             <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
