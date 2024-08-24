@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
+import sanitizeHtml from 'sanitize-html';
 
 const InternalLinkingTool = () => {
   const navigate = useNavigate();
@@ -30,6 +31,23 @@ const InternalLinkingTool = () => {
 
   const handleFileUpload = (e) => {
     setCsvFile(e.target.files[0]);
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
+
+    // Sanitize the pasted HTML to remove unwanted tags and inline styles
+    const sanitizedHtml = sanitizeHtml(pastedData, {
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
+      allowedAttributes: {
+        'a': ['href', 'name', 'target'],
+      },
+      allowedStyles: {},
+    });
+    document.execCommand('insertHTML', false, sanitizedHtml);
   };
 
   const handleProcessText = () => {
