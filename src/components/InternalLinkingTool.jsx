@@ -4,10 +4,32 @@ import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputHtml, setInputHtml] = useState(''); // Handling HTML content
+  const [inputHtml, setInputHtml] = useState(''); 
   const [excludeUrl, setExcludeUrl] = useState('');
-  const [outputHtml, setOutputHtml] = useState(''); // Handling HTML content
+  const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
+
+  const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
+
+  const sanitizeHtml = (html) => {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    const sanitizeNode = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return;
+      }
+      if (!allowedTags.includes(node.nodeName.toLowerCase())) {
+        node.remove();
+        return;
+      }
+
+      node.childNodes.forEach(sanitizeNode);
+    };
+
+    div.childNodes.forEach(sanitizeNode);
+    return div.innerHTML;
+  };
 
   const handleGenerateKeywords = () => {
     if (!url) {
@@ -15,8 +37,7 @@ const InternalLinkingTool = () => {
       return;
     }
 
-    // Mock implementation for generating keywords
-    const generatedKeywords = ['keyword1', 'keyword2', 'keyword3']; // Example
+    const generatedKeywords = ['keyword1', 'keyword2', 'keyword3'];
     console.log('Generated Keywords:', generatedKeywords);
 
     setError('');
@@ -37,10 +58,9 @@ const InternalLinkingTool = () => {
       return;
     }
 
-    // Mock implementation for processing text
-    let processedHtml = inputHtml;
+    const sanitizedHtml = sanitizeHtml(inputHtml);
+    let processedHtml = sanitizedHtml;
 
-    // Simulating keyword replacement with links
     processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
     setError('');
@@ -77,7 +97,6 @@ const InternalLinkingTool = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
-        {/* URL Input and Keyword Generation */}
         <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
           <p className="mb-4 text-gray-700">
@@ -101,7 +120,6 @@ const InternalLinkingTool = () => {
           </div>
         </div>
 
-        {/* Keyword URL Linker */}
         <div className="p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
           <div className="mb-4">
