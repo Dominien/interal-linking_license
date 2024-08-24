@@ -12,7 +12,8 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('https://backend-internal-linking.onrender.com', {
+      // Correct API endpoint with the /api/validate-key path
+      const response = await fetch('https://backend-internal-linking.onrender.com/api/validate-key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productKey }),
@@ -23,7 +24,8 @@ const Login = ({ onLogin }) => {
         localStorage.setItem('token', data.token);
         onLogin();
       } else {
-        setError('Invalid product key. Please try again.');
+        const errorData = await response.json();
+        setError(errorData.error || 'Invalid product key. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
