@@ -12,11 +12,12 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('/api/nodejs/validate-key', {  // Updated to match the Node.js function path
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productKey }),
-      });
+        const response = await fetch('/api/validate-key', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productKey }),
+          });
+          
 
       if (response.ok) {
         const data = await response.json();

@@ -1,0 +1,15 @@
+{
+    "functions": {
+      "api/index": {
+        "source": "backend/index.js",
+        "runtime": "nodejs16.x"
+      }
+    },
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/api/index"
+      }
+    ]
+  }
+  
