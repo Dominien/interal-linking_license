@@ -125,7 +125,7 @@ const InternalLinkingTool = () => {
   };
 
   const handleTextChange = (e) => {
-    const html = e.currentTarget.innerHTML;
+    const html = e.target.innerHTML;
     setInputHtml(html);
   };
 
@@ -182,8 +182,12 @@ const InternalLinkingTool = () => {
               onPaste={handlePaste}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               style={{ minHeight: '150px' }}
-              dangerouslySetInnerHTML={{ __html: inputHtml }}
-            />
+            >
+              {/* This is the div that accepts the input text */}
+              {inputHtml && (
+                <div dangerouslySetInnerHTML={{ __html: inputHtml }} />
+              )}
+            </div>
             <div className="flex space-x-4 mb-4">
               <button onClick={handleProcessText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiPlay className="mr-2" />
@@ -202,8 +206,8 @@ const InternalLinkingTool = () => {
             <div
               contentEditable="true"
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
-              dangerouslySetInnerHTML={{ __html: outputHtml }}
               style={{ minHeight: '150px' }}
+              dangerouslySetInnerHTML={{ __html: outputHtml }}
             />
             {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
