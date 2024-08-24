@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // Import sanitize-html with CommonJS workaround
-const sanitizeHtml = require('sanitize-html');
+import sanitizeHtml from 'sanitize-html';
 import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
