@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiList, FiDelete } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
@@ -10,6 +10,8 @@ const InternalLinkingTool = () => {
   const [error, setError] = useState('');
   const [showToolbar, setShowToolbar] = useState(false);
   const [selectedElement, setSelectedElement] = useState(null);
+  
+  const contentEditableRef = useRef(null);
 
   const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
 
@@ -29,7 +31,11 @@ const InternalLinkingTool = () => {
       node.removeAttribute('class');
       node.removeAttribute('style');
       node.removeAttribute('id');
-      node.removeAttribute('data-*');
+      [...node.attributes].forEach(attr => {
+        if (attr.name.startsWith('data-')) {
+          node.removeAttribute(attr.name);
+        }
+      });
       node.childNodes.forEach(sanitizeNode);
     };
 
@@ -163,6 +169,15 @@ const InternalLinkingTool = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (contentEditableRef.current) {
+      contentEditableRef.current.addEventListener('paste', handlePaste);
+      return () => {
+        contentEditableRef.current.removeEventListener('paste', handlePaste);
+      };
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -210,10 +225,10 @@ const InternalLinkingTool = () => {
             <label className="block mb-2 text-gray-700">Input Text:</label>
             <div
               contentEditable="true"
+              ref={contentEditableRef}
               onInput={handleTextChange}
-              onPaste={handlePaste}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
-              style={{ minHeight: '150px', all: 'initial' }}
+              style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
             {showToolbar && (
@@ -260,7 +275,7 @@ const InternalLinkingTool = () => {
               contentEditable="true"
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               dangerouslySetInnerHTML={{ __html: outputHtml }}
-              style={{ minHeight: '150px', all: 'initial' }}
+              style={{ minHeight: '150px' }}
             />
             {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
