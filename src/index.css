@@ -58,8 +58,8 @@ h1 {
 
   /* Global link styling */
 a {
-    color: blue;           /* Set the text color to blue */
-    text-decoration: underline; /* Underline the text */
+    color: blue !important;           /* Set the text color to blue */
+    text-decoration: underline !important; /* Underline the text */
   }
   
   /* Optional: Add a hover effect */
