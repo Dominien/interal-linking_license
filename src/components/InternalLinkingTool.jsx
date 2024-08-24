@@ -25,13 +25,21 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
-      // Remove classes from elements
+      // Remove classes and styles from elements
       node.removeAttribute('class');
+      node.removeAttribute('style');
       node.childNodes.forEach(sanitizeNode);
     };
 
     div.childNodes.forEach(sanitizeNode);
     return div.innerHTML;
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text/html');
+    const sanitizedData = sanitizeHtml(pastedData);
+    document.execCommand('insertHTML', false, sanitizedData);
   };
 
   const handleGenerateKeywords = () => {
@@ -167,9 +175,7 @@ const InternalLinkingTool = () => {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
-            <button
-              onClick={handleGenerateKeywords}
-            >
+            <button onClick={handleGenerateKeywords}>
               <FiPlay />
               Generate Keywords
             </button>
@@ -197,6 +203,7 @@ const InternalLinkingTool = () => {
             <div
               contentEditable="true"
               onInput={handleTextChange}
+              onPaste={handlePaste}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
             {showToolbar && (
@@ -255,9 +262,7 @@ const InternalLinkingTool = () => {
                   </svg>
                   <span>Error</span>
                 </div>
-                <div>
-                  {error}
-                </div>
+                <div>{error}</div>
               </div>
             )}
           </div>
