@@ -1,17 +1,17 @@
 import React from 'react';
 import './App.css';
-import Login from './components/Login'; // Correct import path
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import InternalLinkingTool from './components/InternalLinkingTool'; // Import your InternalLinkingTool component
 
 function App() {
-  const handleLogin = () => {
-    console.log('User logged in!');
-    // Additional logic after a successful login can be added here
-  };
-
   return (
-    <div className="App">
-      <Login onLogin={handleLogin} />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login onLogin={() => console.log('Logged in!')} />} />
+        <Route path="/internal-linking-tool" element={<InternalLinkingTool />} />
+      </Routes>
+    </Router>
   );
 }
 

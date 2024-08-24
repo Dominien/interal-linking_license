@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button, Input, Alert, AlertIcon, Heading } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
   const [productKey, setProductKey] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +25,7 @@ const Login = ({ onLogin }) => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         onLogin();
+        navigate('/internal-linking-tool'); // Navigate to the internal linking tool page
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Invalid product key. Please try again.');
