@@ -12,7 +12,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('https://backend-internal-linking.onrender.com/api/validate-key', {
+      const response = await fetch('https://backend-internal-linking.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productKey }),
