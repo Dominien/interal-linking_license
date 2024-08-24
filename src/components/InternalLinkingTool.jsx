@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiType, FiList, FiDelete } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputHtml, setInputHtml] = useState('');
+  const [inputHtml, setInputHtml] = useState(''); // Renamed to inputHtml to handle HTML
   const [excludeUrl, setExcludeUrl] = useState('');
-  const [outputHtml, setOutputHtml] = useState('');
+  const [outputHtml, setOutputHtml] = useState(''); // Renamed to outputHtml to handle HTML
   const [error, setError] = useState('');
-  const [showToolbar, setShowToolbar] = useState(false);
-  const [selectedElement, setSelectedElement] = useState(null);
 
   const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
 
@@ -96,59 +94,6 @@ const InternalLinkingTool = () => {
     setInputHtml(html);
   };
 
-  const handleToolbarAction = (action) => {
-    if (!selectedElement) return;
-    
-    switch (action) {
-      case 'bold':
-        document.execCommand('bold');
-        break;
-      case 'h1':
-        document.execCommand('formatBlock', false, 'h1');
-        break;
-      case 'h2':
-        document.execCommand('formatBlock', false, 'h2');
-        break;
-      case 'h3':
-        document.execCommand('formatBlock', false, 'h3');
-        break;
-      case 'ul':
-        document.execCommand('insertUnorderedList');
-        break;
-      case 'ol':
-        document.execCommand('insertOrderedList');
-        break;
-      case 'remove':
-        selectedElement.remove();
-        setSelectedElement(null);
-        setShowToolbar(false);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleSelectionChange = () => {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const parentElement = range.startContainer.parentElement;
-      if (parentElement && allowedTags.includes(parentElement.tagName.toLowerCase())) {
-        setSelectedElement(parentElement);
-        setShowToolbar(true);
-      } else {
-        setShowToolbar(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('selectionchange', handleSelectionChange);
-    return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
-    };
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -201,31 +146,6 @@ const InternalLinkingTool = () => {
               style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
-            {showToolbar && (
-              <div className="flex space-x-2 mb-4">
-                <button onClick={() => handleToolbarAction('bold')} className="p-2 bg-black text-white rounded">
-                  <FiBold />
-                </button>
-                <button onClick={() => handleToolbarAction('h1')} className="p-2 bg-black text-white rounded">
-                  H1
-                </button>
-                <button onClick={() => handleToolbarAction('h2')} className="p-2 bg-black text-white rounded">
-                  H2
-                </button>
-                <button onClick={() => handleToolbarAction('h3')} className="p-2 bg-black text-white rounded">
-                  H3
-                </button>
-                <button onClick={() => handleToolbarAction('ul')} className="p-2 bg-black text-white rounded">
-                  <FiList />
-                </button>
-                <button onClick={() => handleToolbarAction('ol')} className="p-2 bg-black text-white rounded">
-                  <FiList />
-                </button>
-                <button onClick={() => handleToolbarAction('remove')} className="p-2 bg-red-500 text-white rounded">
-                  <FiDelete />
-                </button>
-              </div>
-            )}
             <div className="flex space-x-4 mb-4">
               <button onClick={handleProcessText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiPlay className="mr-2" />
