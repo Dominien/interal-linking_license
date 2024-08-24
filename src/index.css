@@ -3,3 +3,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Basic heading styles */
+h1 {
+    font-size: 2.5rem; /* Largest heading */
+    font-weight: bold;
+    margin-bottom: 1rem; /* Space below the heading */
+    margin-top: 1.5rem; /* Space above the heading */
+  }
+  
+  h2 {
+    font-size: 2rem; /* Second largest heading */
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.75rem; /* Third largest heading */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  h4 {
+    font-size: 1.5rem; /* Fourth largest heading */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  
+  h5 {
+    font-size: 1.25rem; /* Fifth largest heading */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  h6 {
+    font-size: 1rem; /* Smallest heading */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Optional: Adding some color to headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: #333; /* Dark gray color */
+  }
+  
+  /* Optional: Setting a universal line height for headings */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+  }
+  
