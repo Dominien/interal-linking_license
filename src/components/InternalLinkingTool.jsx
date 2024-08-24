@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay, FiBold, FiType, FiList, FiDelete } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputHtml, setInputHtml] = useState(''); 
+  const [inputHtml, setInputHtml] = useState('');
   const [excludeUrl, setExcludeUrl] = useState('');
   const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
+  const [showToolbar, setShowToolbar] = useState(false);
+  const [selectedElement, setSelectedElement] = useState(null);
 
   const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
 
@@ -23,7 +25,6 @@ const InternalLinkingTool = () => {
         node.remove();
         return;
       }
-
       node.childNodes.forEach(sanitizeNode);
     };
 
@@ -36,10 +37,7 @@ const InternalLinkingTool = () => {
       setError('Please enter a URL.');
       return;
     }
-
     const generatedKeywords = ['keyword1', 'keyword2', 'keyword3'];
-    console.log('Generated Keywords:', generatedKeywords);
-
     setError('');
   };
 
@@ -60,7 +58,6 @@ const InternalLinkingTool = () => {
 
     const sanitizedHtml = sanitizeHtml(inputHtml);
     let processedHtml = sanitizedHtml;
-
     processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
     setError('');
@@ -94,14 +91,73 @@ const InternalLinkingTool = () => {
     document.body.removeChild(tempElement);
   };
 
+  const handleTextChange = (e) => {
+    const html = e.currentTarget.innerHTML;
+    setInputHtml(html);
+  };
+
+  const handleToolbarAction = (action) => {
+    if (!selectedElement) return;
+
+    switch (action) {
+      case 'bold':
+        document.execCommand('bold');
+        break;
+      case 'h1':
+        document.execCommand('formatBlock', false, 'h1');
+        break;
+      case 'h2':
+        document.execCommand('formatBlock', false, 'h2');
+        break;
+      case 'h3':
+        document.execCommand('formatBlock', false, 'h3');
+        break;
+      case 'ul':
+        document.execCommand('insertUnorderedList');
+        break;
+      case 'ol':
+        document.execCommand('insertOrderedList');
+        break;
+      case 'remove':
+        if (selectedElement) {
+          selectedElement.remove();
+        }
+        setSelectedElement(null);
+        setShowToolbar(false);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSelectionChange = () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const parentElement = range.startContainer.parentElement;
+      if (parentElement && allowedTags.includes(parentElement.tagName.toLowerCase())) {
+        setSelectedElement(parentElement);
+        setShowToolbar(true);
+      } else {
+        setShowToolbar(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
+        {/* URL Input and Keyword Generation */}
         <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
-          <p className="mb-4 text-gray-700">
-            Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.
-          </p>
+          <p className="mb-4 text-gray-700">Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
           <div className="mb-4">
             <input
               type="text"
@@ -120,6 +176,7 @@ const InternalLinkingTool = () => {
           </div>
         </div>
 
+        {/* Keyword URL Linker */}
         <div className="p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
           <div className="mb-4">
@@ -141,39 +198,56 @@ const InternalLinkingTool = () => {
             <label className="block mb-2 text-gray-700">Input Text:</label>
             <div
               contentEditable="true"
-              onInput={(e) => setInputHtml(e.currentTarget.innerHTML)}
+              onInput={handleTextChange}
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: inputHtml }}
             />
+            {showToolbar && (
+              <div className="flex space-x-2 mb-4">
+                <button onClick={() => handleToolbarAction('bold')} className="p-2 bg-black text-white rounded">
+                  <FiBold />
+                </button>
+                <button onClick={() => handleToolbarAction('h1')} className="p-2 bg-black text-white rounded">
+                  H1
+                </button>
+                <button onClick={() => handleToolbarAction('h2')} className="p-2 bg-black text-white rounded">
+                  H2
+                </button>
+                <button onClick={() => handleToolbarAction('h3')} className="p-2 bg-black text-white rounded">
+                  H3
+                </button>
+                <button onClick={() => handleToolbarAction('ul')} className="p-2 bg-black text-white rounded">
+                  <FiList />
+                </button>
+                <button onClick={() => handleToolbarAction('ol')} className="p-2 bg-black text-white rounded">
+                  <FiList />
+                </button>
+                <button onClick={() => handleToolbarAction('remove')} className="p-2 bg-red-500 text-white rounded">
+                  <FiDelete />
+                </button>
+              </div>
+            )}
             <div className="flex space-x-4 mb-4">
-              <button
-                onClick={handleProcessText}
-                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
-              >
+              <button onClick={handleProcessText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiPlay className="mr-2" />
                 Process
               </button>
-              <button
-                onClick={clearText}
-                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
-              >
+              <button onClick={clearText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiRefreshCcw className="mr-2" />
                 Clear
               </button>
-              <button
-                onClick={copyToClipboard}
-                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
-              >
+              <button onClick={copyToClipboard} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiClipboard className="mr-2" />
                 Copy
               </button>
             </div>
             <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
             <div
+              contentEditable="true"
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
-              style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: outputHtml }}
+              style={{ minHeight: '150px' }}
             />
             {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
@@ -194,7 +268,9 @@ const InternalLinkingTool = () => {
                   </svg>
                   <span className="ml-2 text-red-600 font-semibold">Error</span>
                 </div>
-                <div className="mt-2 text-red-700">{error}</div>
+                <div className="mt-2 text-red-700">
+                  {error}
+                </div>
               </div>
             )}
           </div>
