@@ -4,9 +4,9 @@ import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputText, setInputText] = useState('');
+  const [inputHtml, setInputHtml] = useState(''); // Renamed to inputHtml to handle HTML
   const [excludeUrl, setExcludeUrl] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const [outputHtml, setOutputHtml] = useState(''); // Renamed to outputHtml to handle HTML
   const [error, setError] = useState('');
 
   const handleGenerateKeywords = () => {
@@ -32,28 +32,43 @@ const InternalLinkingTool = () => {
       return;
     }
 
-    if (!inputText) {
+    if (!inputHtml) {
       setError('Please enter text to process.');
       return;
     }
 
     // Mock implementation for processing text
-    const processedText = inputText.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
-    setOutputText(processedText);
+    const processedHtml = inputHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
+    setOutputHtml(processedHtml);
     setError('');
   };
 
   const clearText = () => {
-    setInputText('');
-    setOutputText('');
+    setInputHtml('');
+    setOutputHtml('');
     setExcludeUrl('');
     setError('');
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(outputText)
-      .then(() => alert('HTML text copied to clipboard with formatting.'))
-      .catch(() => setError('Failed to copy text to clipboard.'));
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = outputHtml;
+    document.body.appendChild(tempElement);
+
+    const range = document.createRange();
+    range.selectNode(tempElement);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    try {
+      document.execCommand('copy');
+      alert('HTML text copied to clipboard with formatting.');
+    } catch (err) {
+      setError('Failed to copy text to clipboard.');
+    }
+
+    document.body.removeChild(tempElement);
   };
 
   return (
@@ -103,8 +118,8 @@ const InternalLinkingTool = () => {
             <label className="block mb-2 text-gray-700">Input Text:</label>
             <textarea
               placeholder="Paste your content here"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              value={inputHtml}  // Now handling HTML content
+              onChange={(e) => setInputHtml(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded mb-4"
               rows="6"
             />
@@ -134,7 +149,7 @@ const InternalLinkingTool = () => {
             <label className="block mb-2 text-gray-700">Output Text with Hyperlinks:</label>
             <textarea
               placeholder="Your processed content will appear here"
-              value={outputText}
+              value={outputHtml}  // Now handling HTML content
               readOnly
               className="w-full p-3 border border-gray-300 rounded mb-4"
               rows="6"
