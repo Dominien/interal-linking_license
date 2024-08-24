@@ -55,4 +55,17 @@ h1 {
   h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
   }
+
+  /* Global link styling */
+a {
+    color: blue;           /* Set the text color to blue */
+    text-decoration: underline; /* Underline the text */
+  }
+  
+  /* Optional: Add a hover effect */
+  a:hover {
+    color: darkblue;       /* Darker blue on hover */
+    text-decoration: underline; /* Ensure underline stays on hover */
+  }
+  
   

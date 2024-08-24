@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, Alert, AlertIcon, Heading } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
-  const [productKey, setProductKey] = useState('');
+  // Initialize productKey state with the value from localStorage, if it exists
+  const [productKey, setProductKey] = useState(localStorage.getItem('productKey') || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
+      // Save productKey to localStorage
+      localStorage.setItem('productKey', productKey);
+
       // Correct API endpoint with the /api/validate-key path
       const response = await fetch('https://backend-internal-linking.onrender.com/api/validate-key', {
         method: 'POST',
