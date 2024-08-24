@@ -68,47 +68,56 @@ const InternalLinkingTool = () => {
   };
 
   return (
-    <Box p={8} bg="gray.100" minHeight="100vh">
-      <VStack spacing={8} align="stretch">
-        <Heading textAlign="center">Internal Linking Tool</Heading>
+    <Box className="min-h-screen bg-gray-50 p-8 flex flex-col items-center">
+      <Box className="max-w-2xl w-full bg-white p-6 rounded-lg shadow-md">
+        <Heading className="text-2xl font-bold mb-6 text-center">Internal Linking Tool</Heading>
 
-        {/* Upper Part: URL Input and Keyword Generation */}
-        <VStack spacing={4} align="stretch">
+        {/* URL Input and Keyword Generation */}
+        <VStack spacing={4} className="mb-6">
           <Input
             placeholder="Enter URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            size="lg"
+            className="w-full"
           />
-          <Button colorScheme="blue" onClick={handleGenerateKeywords}>
+          <Button colorScheme="blue" onClick={handleGenerateKeywords} className="w-full">
             Generate Keywords
           </Button>
         </VStack>
 
-        {/* Lower Part: CSV Upload and Text Processing */}
-        <VStack spacing={4} align="stretch">
+        {/* CSV Upload and Text Processing */}
+        <VStack spacing={4}>
           <Input
             type="file"
             accept=".csv"
             onChange={handleFileUpload}
+            size="lg"
+            className="w-full"
           />
           <Input
             placeholder="Exclude URL"
             value={excludeUrl}
             onChange={(e) => setExcludeUrl(e.target.value)}
+            size="lg"
+            className="w-full"
           />
           <Textarea
             placeholder="Input Text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            size="lg"
+            className="w-full"
+            resize="vertical"
           />
-          <div className="flex space-x-2 mb-2">
-            <Button colorScheme="blue" onClick={handleProcessText}>
+          <div className="flex space-x-2 w-full">
+            <Button colorScheme="blue" onClick={handleProcessText} className="w-1/3">
               Process
             </Button>
-            <Button colorScheme="gray" onClick={clearText}>
+            <Button variant="outline" onClick={clearText} className="w-1/3">
               Clear
             </Button>
-            <Button colorScheme="green" onClick={copyToClipboard}>
+            <Button colorScheme="green" onClick={copyToClipboard} className="w-1/3">
               Copy
             </Button>
           </div>
@@ -116,16 +125,20 @@ const InternalLinkingTool = () => {
             placeholder="Output Text with Hyperlinks"
             value={outputText}
             readOnly
+            size="lg"
+            className="w-full mt-4"
+            resize="vertical"
+            height="150px"
           />
           {error && (
-            <Alert status="error">
+            <Alert status="error" className="mt-4">
               <AlertIcon />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
         </VStack>
-      </VStack>
+      </Box>
     </Box>
   );
 };
