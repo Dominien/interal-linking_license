@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Button, Input, VStack, Textarea, useToast, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Input,
+  Textarea,
+  VStack,
+  Heading,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/react';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
@@ -7,33 +18,19 @@ const InternalLinkingTool = () => {
   const [inputText, setInputText] = useState('');
   const [excludeUrl, setExcludeUrl] = useState('');
   const [outputText, setOutputText] = useState('');
-  const [keywords, setKeywords] = useState([]);
-  const toast = useToast();
+  const [error, setError] = useState('');
 
-  const handleGenerateKeywords = async () => {
+  const handleGenerateKeywords = () => {
     if (!url) {
-      toast({
-        title: "Error",
-        description: "Please enter a URL.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      setError('Please enter a URL.');
       return;
     }
 
     // Mock implementation for generating keywords
-    // Replace this with the actual backend call to generate keywords and CSV file
     const generatedKeywords = ['keyword1', 'keyword2', 'keyword3']; // Example
-    setKeywords(generatedKeywords);
+    console.log("Generated Keywords:", generatedKeywords);
 
-    toast({
-      title: "Success",
-      description: "Keyword list generated.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    setError('');
   };
 
   const handleFileUpload = (e) => {
@@ -42,39 +39,32 @@ const InternalLinkingTool = () => {
 
   const handleProcessText = () => {
     if (!csvFile) {
-      toast({
-        title: "Error",
-        description: "Please upload a CSV file.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      setError('Please upload a CSV file.');
       return;
     }
 
     if (!inputText) {
-      toast({
-        title: "Error",
-        description: "Please enter text to process.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      setError('Please enter text to process.');
       return;
     }
 
-    // Here, you'd implement the actual logic to process the text using the keywords and URLs from the CSV
-    // For now, this is a mock implementation
+    // Mock implementation for processing text
     const processedText = inputText.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputText(processedText);
+    setError('');
+  };
 
-    toast({
-      title: "Success",
-      description: "Text processed with hyperlinks.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+  const clearText = () => {
+    setInputText('');
+    setOutputText('');
+    setExcludeUrl('');
+    setError('');
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(outputText)
+      .then(() => alert('HTML text copied to clipboard with formatting.'))
+      .catch(() => setError('Failed to copy text to clipboard.'));
   };
 
   return (
@@ -107,17 +97,32 @@ const InternalLinkingTool = () => {
             onChange={(e) => setExcludeUrl(e.target.value)}
           />
           <Textarea
-            placeholder="Enter text to process"
+            placeholder="Input Text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
-          <Button colorScheme="blue" onClick={handleProcessText}>
-            Process Text
-          </Button>
-          {outputText && (
-            <Box mt={4} p={4} bg="white" borderRadius="md" boxShadow="md">
-              <div dangerouslySetInnerHTML={{ __html: outputText }} />
-            </Box>
+          <div className="flex space-x-2 mb-2">
+            <Button colorScheme="blue" onClick={handleProcessText}>
+              Process
+            </Button>
+            <Button colorScheme="gray" onClick={clearText}>
+              Clear
+            </Button>
+            <Button colorScheme="green" onClick={copyToClipboard}>
+              Copy
+            </Button>
+          </div>
+          <Textarea
+            placeholder="Output Text with Hyperlinks"
+            value={outputText}
+            readOnly
+          />
+          {error && (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
         </VStack>
       </VStack>
