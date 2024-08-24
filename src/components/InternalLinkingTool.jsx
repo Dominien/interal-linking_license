@@ -13,10 +13,29 @@ const InternalLinkingTool = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check if the product key or token exists in localStorage
+    // Check if the token exists in localStorage
     const token = localStorage.getItem('token');
+
     if (!token) {
       navigate('/'); // Redirect to login page if no token is found
+    } else {
+      // Validate the token with the backend
+      fetch('https://backend-internal-linking.onrender.com/api/validate-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data.valid) {
+            localStorage.removeItem('token');
+            navigate('/');
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('token');
+          navigate('/');
+        });
     }
   }, [navigate]);
 
@@ -25,7 +44,8 @@ const InternalLinkingTool = () => {
       setError('Please enter a URL.');
       return;
     }
-    const generatedKeywords = ['keyword1', 'keyword2', 'keyword3'];
+    const generatedKeywords = ['keyword1', 'keyword2', 'keyword3']; // Mock example
+    console.log('Generated Keywords:', generatedKeywords);
     setError('');
   };
 
@@ -43,10 +63,11 @@ const InternalLinkingTool = () => {
     const sanitizedHtml = sanitizeHtml(pastedData, {
       allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
       allowedAttributes: {
-        'a': ['href', 'name', 'target'],
+        a: ['href', 'name', 'target'],
       },
       allowedStyles: {},
     });
+
     document.execCommand('insertHTML', false, sanitizedHtml);
   };
 
@@ -64,12 +85,13 @@ const InternalLinkingTool = () => {
     const sanitizedHtml = sanitizeHtml(inputHtml, {
       allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
       allowedAttributes: {
-        'a': ['href', 'name', 'target'],
+        a: ['href', 'name', 'target'],
       },
       allowedStyles: {},
     });
-    let processedHtml = sanitizedHtml;
-    processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
+
+    // Mock processing: replace "keyword" with a hyperlink
+    let processedHtml = sanitizedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
     setError('');
   };
@@ -113,7 +135,9 @@ const InternalLinkingTool = () => {
         {/* URL Input and Keyword Generation */}
         <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
-          <p className="mb-4 text-gray-700">Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.</p>
+          <p className="mb-4 text-gray-700">
+            Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.
+          </p>
           <div className="mb-4">
             <input
               type="text"
@@ -200,9 +224,7 @@ const InternalLinkingTool = () => {
                   </svg>
                   <span className="ml-2 text-red-600 font-semibold">Error</span>
                 </div>
-                <div className="mt-2 text-red-700">
-                  {error}
-                </div>
+                <div className="mt-2 text-red-700">{error}</div>
               </div>
             )}
           </div>
