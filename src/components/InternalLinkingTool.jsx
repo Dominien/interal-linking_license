@@ -20,6 +20,7 @@ const InternalLinkingTool = () => {
 
     setError('');
   };
+  
 
   const handleFileUpload = (e) => {
     setCsvFile(e.target.files[0]);
