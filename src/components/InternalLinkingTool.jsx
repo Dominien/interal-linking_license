@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import sanitizeHtml from 'sanitize-html';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
   const [inputHtml, setInputHtml] = useState('');
@@ -12,31 +11,13 @@ const InternalLinkingTool = () => {
   const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
 
-  // Check for product key in localStorage
   useEffect(() => {
+    // Check if the product key or token exists in localStorage
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/'); // Redirect to login if no token is found
+      navigate('/'); // Redirect to login page if no token is found
     }
   }, [navigate]);
-
-  const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
-
-  const sanitizeOptions = {
-    allowedTags: allowedTags,
-    allowedAttributes: {
-      'a': ['href', 'name', 'target'],
-    },
-    allowedStyles: {},
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const clipboardData = e.clipboardData || window.clipboardData;
-    const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
-    const sanitizedHtml = sanitizeHtml(pastedData, sanitizeOptions);
-    document.execCommand('insertHTML', false, sanitizedHtml);
-  };
 
   const handleGenerateKeywords = () => {
     if (!url) {
@@ -56,11 +37,19 @@ const InternalLinkingTool = () => {
       setError('Please upload a CSV file.');
       return;
     }
+
     if (!inputHtml) {
       setError('Please enter text to process.');
       return;
     }
-    const sanitizedHtml = sanitizeHtml(inputHtml, sanitizeOptions);
+
+    const sanitizedHtml = sanitizeHtml(inputHtml, {
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
+      allowedAttributes: {
+        'a': ['href', 'name', 'target'],
+      },
+      allowedStyles: {},
+    });
     let processedHtml = sanitizedHtml;
     processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
@@ -78,17 +67,20 @@ const InternalLinkingTool = () => {
     const tempElement = document.createElement('div');
     tempElement.innerHTML = outputHtml;
     document.body.appendChild(tempElement);
+
     const range = document.createRange();
     range.selectNodeContents(tempElement);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
+
     try {
       document.execCommand('copy');
       alert('HTML text copied to clipboard with formatting.');
     } catch (err) {
       setError('Failed to copy text to clipboard.');
     }
+
     document.body.removeChild(tempElement);
   };
 
