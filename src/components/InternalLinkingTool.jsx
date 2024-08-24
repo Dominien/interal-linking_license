@@ -1,39 +1,24 @@
 import React, { useState } from 'react';
 import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
+import sanitizeHtml from 'sanitize-html';
 
 const InternalLinkingTool = () => {
   const [url, setUrl] = useState('');
   const [csvFile, setCsvFile] = useState(null);
-  const [inputHtml, setInputHtml] = useState(''); // Renamed to inputHtml to handle HTML
+  const [inputHtml, setInputHtml] = useState('');
   const [excludeUrl, setExcludeUrl] = useState('');
-  const [outputHtml, setOutputHtml] = useState(''); // Renamed to outputHtml to handle HTML
+  const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
 
   const allowedTags = ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'];
 
-  const sanitizeHtml = (html) => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-
-    const sanitizeNode = (node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return;
-      }
-      if (!allowedTags.includes(node.nodeName.toLowerCase())) {
-        node.remove();
-        return;
-      }
-
-      // Remove all inline styles
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        node.removeAttribute('style');
-      }
-
-      node.childNodes.forEach(sanitizeNode);
-    };
-
-    div.childNodes.forEach(sanitizeNode);
-    return div.innerHTML;
+  const sanitizeOptions = {
+    allowedTags: allowedTags,
+    allowedAttributes: {
+      'a': ['href', 'name', 'target'],
+    },
+    // Disallow all inline styles
+    allowedStyles: {},
   };
 
   const handlePaste = (e) => {
@@ -42,7 +27,8 @@ const InternalLinkingTool = () => {
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
 
-    const sanitizedHtml = sanitizeHtml(pastedData);
+    // Sanitize the pasted HTML to remove unwanted tags and inline styles
+    const sanitizedHtml = sanitizeHtml(pastedData, sanitizeOptions);
     document.execCommand('insertHTML', false, sanitizedHtml);
   };
 
@@ -70,7 +56,7 @@ const InternalLinkingTool = () => {
       return;
     }
 
-    const sanitizedHtml = sanitizeHtml(inputHtml);
+    const sanitizedHtml = sanitizeHtml(inputHtml, sanitizeOptions);
     let processedHtml = sanitizedHtml;
     processedHtml = processedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
