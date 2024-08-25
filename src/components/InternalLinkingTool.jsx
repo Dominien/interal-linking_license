@@ -39,32 +39,33 @@ const InternalLinkingTool = () => {
 
   const handleGenerateKeywords = async () => {
     if (!url) {
-      setError('Please enter a URL.');
-      return;
+        setError('Please enter a URL.');
+        return;
     }
     setError('');
     
     try {
-      const response = await fetch('https://your-flask-backend-url/generate-keywords', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ domain: url, max_depth: 2 }),
-      });
+        const response = await fetch('https://backend-internal-linking.onrender.com:5001/generate-keywords', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ domain: url, max_depth: 2 }),
+        });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        setCsvDownloadUrl(downloadUrl);
-        setError('');
-      } else {
-        setError('Failed to generate keywords.');
-      }
+        if (response.ok) {
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            setCsvDownloadUrl(downloadUrl);
+            setError('');
+        } else {
+            setError('Failed to generate keywords.');
+        }
     } catch (err) {
-      setError('An error occurred while generating keywords.');
+        setError('An error occurred while generating keywords.');
     }
-  };
+};
+ 
 
   const handleFileUpload = (e) => {
     setCsvFile(e.target.files[0]);
