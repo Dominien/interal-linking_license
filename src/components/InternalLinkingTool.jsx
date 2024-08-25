@@ -227,7 +227,7 @@ const InternalLinkingTool = () => {
               style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: outputHtml }}
             />
-                       {error && (
+            {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
                 <div className="flex items-center">
                   <svg
@@ -237,7 +237,7 @@ const InternalLinkingTool = () => {
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path
+                                       <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
