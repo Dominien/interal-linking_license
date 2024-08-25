@@ -11,15 +11,13 @@ const InternalLinkingTool = () => {
   const [excludeUrl, setExcludeUrl] = useState('');
   const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
+  const [csvDownloadUrl, setCsvDownloadUrl] = useState('');
 
   useEffect(() => {
-    // Check if the token exists in localStorage
     const token = localStorage.getItem('token');
-
     if (!token) {
       navigate('/'); // Redirect to login page if no token is found
     } else {
-      // Validate the token with the backend
       fetch('https://backend-internal-linking.onrender.com/api/validate-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,14 +37,33 @@ const InternalLinkingTool = () => {
     }
   }, [navigate]);
 
-  const handleGenerateKeywords = () => {
+  const handleGenerateKeywords = async () => {
     if (!url) {
       setError('Please enter a URL.');
       return;
     }
-    const generatedKeywords = ['keyword1', 'keyword2', 'keyword3']; // Mock example
-    console.log('Generated Keywords:', generatedKeywords);
     setError('');
+    
+    try {
+      const response = await fetch('https://your-flask-backend-url/generate-keywords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ domain: url, max_depth: 2 }),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        setCsvDownloadUrl(downloadUrl);
+        setError('');
+      } else {
+        setError('Failed to generate keywords.');
+      }
+    } catch (err) {
+      setError('An error occurred while generating keywords.');
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -55,11 +72,9 @@ const InternalLinkingTool = () => {
 
   const handlePaste = (e) => {
     e.preventDefault();
-
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
 
-    // Sanitize the pasted HTML to remove unwanted tags and inline styles
     const sanitizedHtml = sanitizeHtml(pastedData, {
       allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
       allowedAttributes: {
@@ -90,7 +105,6 @@ const InternalLinkingTool = () => {
       allowedStyles: {},
     });
 
-    // Mock processing: replace "keyword" with a hyperlink
     let processedHtml = sanitizedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
     setOutputHtml(processedHtml);
     setError('');
@@ -132,7 +146,6 @@ const InternalLinkingTool = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
-        {/* URL Input and Keyword Generation */}
         <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
           <p className="mb-4 text-gray-700">
@@ -153,10 +166,16 @@ const InternalLinkingTool = () => {
               <FiPlay className="mr-2" />
               Generate Keywords
             </button>
+            {csvDownloadUrl && (
+              <a href={csvDownloadUrl} download="keywords_urls.csv" className="mt-4 inline-block p-3 bg-blue-500 text-white rounded">
+                Download CSV
+              </a>
+            )}
           </div>
         </div>
 
-        {/* Keyword URL Linker */}
+        {/* The rest of your component remains unchanged */}
+
         <div className="p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
           <div className="mb-4">
@@ -183,7 +202,6 @@ const InternalLinkingTool = () => {
               className="w-full p-3 border border-gray-300 rounded mb-4 bg-white"
               style={{ minHeight: '150px' }}
             >
-              {/* This is the div that accepts the input text */}
               {inputHtml && (
                 <div dangerouslySetInnerHTML={{ __html: inputHtml }} />
               )}
@@ -209,7 +227,7 @@ const InternalLinkingTool = () => {
               style={{ minHeight: '150px' }}
               dangerouslySetInnerHTML={{ __html: outputHtml }}
             />
-            {error && (
+                       {error && (
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded">
                 <div className="flex items-center">
                   <svg
