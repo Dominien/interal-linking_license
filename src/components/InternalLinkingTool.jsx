@@ -45,7 +45,7 @@ const InternalLinkingTool = () => {
     setError('');
     
     try {
-        const response = await fetch('https://backend-internal-linking.onrender.com:5001/generate-keywords', {
+        const response = await fetch('https://backend-internal-linking.onrender.com/generate-keywords', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
