@@ -39,33 +39,35 @@ const InternalLinkingTool = () => {
 
   const handleGenerateKeywords = async () => {
     if (!url) {
-        setError('Please enter a URL.');
-        return;
+      setError('Please enter a URL.');
+      return;
     }
     setError('');
     
     try {
-        const response = await fetch('https://backend-internal-linking.onrender.com/generate-keywords', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ domain: url, max_depth: 2 }),
-        });
+      const response = await fetch('https://backend-internal-linking.onrender.com/generate-keywords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ domain: url, max_depth: 2 }),
+      });
 
-        if (response.ok) {
-            const blob = await response.blob();
-            const downloadUrl = window.URL.createObjectURL(blob);
-            setCsvDownloadUrl(downloadUrl);
-            setError('');
-        } else {
-            setError('Failed to generate keywords.');
-        }
+      if (response.ok) {
+        const data = await response.json();
+        const csvContent = data.map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        setCsvDownloadUrl(downloadUrl);
+        setError('');
+      } else {
+        const errorText = await response.text();
+        setError(`Failed to generate keywords: ${errorText}`);
+      }
     } catch (err) {
-        setError('An error occurred while generating keywords.');
+      setError('An error occurred while generating keywords.');
     }
-};
- 
+  };
 
   const handleFileUpload = (e) => {
     setCsvFile(e.target.files[0]);
@@ -175,8 +177,6 @@ const InternalLinkingTool = () => {
           </div>
         </div>
 
-        {/* The rest of your component remains unchanged */}
-
         <div className="p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
           <div className="mb-4">
@@ -238,7 +238,7 @@ const InternalLinkingTool = () => {
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                                       <path
+                    <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
