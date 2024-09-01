@@ -14,13 +14,6 @@ const Navbar = () => {
     <nav className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-2xl font-bold text-white no-underline hover:text-gray-400">
-                MyApp
-              </Link>
-            </div>
-          </div>
           <div className="hidden sm:flex sm:items-center">
             <div className="relative">
               <button
