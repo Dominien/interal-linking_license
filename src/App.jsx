@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './Navbar';
+import Footer from './Footer';
 import InternalLinkingTool from './components/InternalLinkingTool';
 import Profile from './components/Profile'; // Import the Profile component
 
