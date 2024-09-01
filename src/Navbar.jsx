@@ -19,17 +19,17 @@ const Navbar = () => {
         },
         body: JSON.stringify({ token }),
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.valid) {
-          setUserName(data.user); // Set the user's name from the response
-        } else {
-          console.error('Invalid token');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.valid) {
+            setUserName(data.user); // Set the user's name from the response
+          } else {
+            console.error('Invalid token');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
     } else {
       console.error('No token found');
     }
@@ -42,7 +42,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove the token from localStorage
     setDropdownOpen(false);
-    navigate('../'); // Navigate to the login page
+    navigate('/login'); // Navigate to the login page
   };
 
   return (
