@@ -11,7 +11,7 @@ const Navbar = () => {
     const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
 
     if (token) {
-      fetch('https://backend-internal-linkin-python.onrender.com/api/get-user', {
+      fetch('https://backend-internal-linking.onrender.com/api/get-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
