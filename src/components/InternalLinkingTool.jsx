@@ -1,116 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiUpload, FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
-import sanitizeHtml from 'sanitize-html';
+import React, { useState } from 'react';
+import { FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 
 const InternalLinkingTool = () => {
-  const navigate = useNavigate();
-  const [url, setUrl] = useState('');
-  const [csvFile, setCsvFile] = useState(null);
   const [inputHtml, setInputHtml] = useState('');
   const [excludeUrl, setExcludeUrl] = useState('');
   const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
-  const [csvDownloadUrl, setCsvDownloadUrl] = useState('');
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/'); // Redirect to login page if no token is found
-    } else {
-      fetch('https://backend-internal-linking.onrender.com/api/validate-token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (!data.valid) {
-            localStorage.removeItem('token');
-            navigate('/');
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem('token');
-          navigate('/');
-        });
-    }
-  }, [navigate]);
-
-  const handleGenerateKeywords = async () => {
-    if (!url) {
-      setError('Please enter a URL.');
-      return;
-    }
-    setError('');
-    
-    try {
-      const response = await fetch('https://backend-internal-linking.onrender.com/generate-keywords', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ domain: url, max_depth: 2 }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const csvContent = data.map(row => row.join(',')).join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const downloadUrl = window.URL.createObjectURL(blob);
-        setCsvDownloadUrl(downloadUrl);
-        setError('');
-      } else {
-        const errorText = await response.text();
-        setError(`Failed to generate keywords: ${errorText}`);
-      }
-    } catch (err) {
-      setError('An error occurred while generating keywords.');
-    }
-  };
-
-  const handleFileUpload = (e) => {
-    setCsvFile(e.target.files[0]);
+  const handleTextChange = (e) => {
+    const html = e.target.innerHTML;
+    setInputHtml(html);
   };
 
   const handlePaste = (e) => {
     e.preventDefault();
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
-
-    const sanitizedHtml = sanitizeHtml(pastedData, {
-      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
-      allowedAttributes: {
-        a: ['href', 'name', 'target'],
-      },
-      allowedStyles: {},
-    });
-
-    document.execCommand('insertHTML', false, sanitizedHtml);
+    document.execCommand('insertHTML', false, pastedData);
   };
 
-  const handleProcessText = () => {
-    if (!csvFile) {
-      setError('Please upload a CSV file.');
-      return;
-    }
-
+  const handleProcessText = async () => {
     if (!inputHtml) {
       setError('Please enter text to process.');
       return;
     }
 
-    const sanitizedHtml = sanitizeHtml(inputHtml, {
-      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
-      allowedAttributes: {
-        a: ['href', 'name', 'target'],
-      },
-      allowedStyles: {},
-    });
+    try {
+      const response = await fetch('http://your-backend-url/process-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          input_text: inputHtml,
+          exclude_url: excludeUrl,
+        }),
+      });
 
-    let processedHtml = sanitizedHtml.replace(/keyword/g, '<a href="http://example.com">keyword</a>');
-    setOutputHtml(processedHtml);
-    setError('');
+      if (response.ok) {
+        const data = await response.json();
+        setOutputHtml(data.hyperlinked_text);
+        setError('');
+      } else {
+        setError('Failed to process text.');
+      }
+    } catch (err) {
+      setError('An error occurred while processing the text.');
+    }
   };
 
   const clearText = () => {
@@ -141,52 +77,12 @@ const InternalLinkingTool = () => {
     document.body.removeChild(tempElement);
   };
 
-  const handleTextChange = (e) => {
-    const html = e.target.innerHTML;
-    setInputHtml(html);
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6 p-8 bg-white shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">URL Input and Keyword Generation</h2>
-          <p className="mb-4 text-gray-700">
-            Use the tool to generate keywords automatically or upload your own CSV file with keywords and URLs.
-          </p>
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Enter URL"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded mb-4"
-            />
-            <button
-              onClick={handleGenerateKeywords}
-              className="w-full p-3 bg-black text-white rounded flex items-center justify-center"
-            >
-              <FiPlay className="mr-2" />
-              Generate Keywords
-            </button>
-            {csvDownloadUrl && (
-              <a href={csvDownloadUrl} download="keywords_urls.csv" className="mt-4 inline-block p-3 bg-blue-500 text-white rounded">
-                Download CSV
-              </a>
-            )}
-          </div>
-        </div>
-
         <div className="p-8 bg-white shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Keyword URL Linker</h2>
+          <h2 className="text-2xl font-bold mb-4">Jan Bahmann Internal Linking Tool</h2>
           <div className="mb-4">
-            <label className="block mb-2 text-gray-700">Upload CSV File:</label>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileUpload}
-              className="w-full p-3 border border-gray-300 rounded mb-4"
-            />
             <label className="block mb-2 text-gray-700">Exclude URL:</label>
             <input
               type="text"
