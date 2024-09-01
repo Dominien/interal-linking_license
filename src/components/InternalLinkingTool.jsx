@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
+import sanitizeHtml from 'sanitize-html';
 
 const InternalLinkingTool = () => {
   const [inputHtml, setInputHtml] = useState('');
@@ -9,14 +10,34 @@ const InternalLinkingTool = () => {
 
   const handleTextChange = (e) => {
     const html = e.target.innerHTML;
-    setInputHtml(html);
+
+    // Sanitize the HTML to remove classes and styles
+    const sanitizedHtml = sanitizeHtml(html, {
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
+      allowedAttributes: {
+        a: ['href', 'name', 'target'],
+      },
+      allowedSchemes: ['http', 'https', 'mailto'],
+    });
+
+    setInputHtml(sanitizedHtml);
   };
 
   const handlePaste = (e) => {
     e.preventDefault();
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('text/html') || clipboardData.getData('text/plain');
-    document.execCommand('insertHTML', false, pastedData);
+
+    // Sanitize the pasted HTML to remove classes and styles
+    const sanitizedHtml = sanitizeHtml(pastedData, {
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
+      allowedAttributes: {
+        a: ['href', 'name', 'target'],
+      },
+      allowedSchemes: ['http', 'https', 'mailto'],
+    });
+
+    document.execCommand('insertHTML', false, sanitizedHtml);
   };
 
   const handleProcessText = async () => {
@@ -26,7 +47,7 @@ const InternalLinkingTool = () => {
     }
 
     try {
-      const response = await fetch('http://your-backend-url/process-text', {
+      const response = await fetch('https://backend-internal-linkin-python.onrender.com/process-text', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
