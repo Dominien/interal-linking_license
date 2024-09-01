@@ -13,10 +13,10 @@ const Navbar = () => {
   return (
     <nav className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16"> {/* Added items-center to vertically center content */}
+        <div className="flex justify-between items-center h-16">
           <div className="flex">
             <div className="flex-shrink-0">
-              <Link to="/" className="text-2xl font-bold text-white no-underline hover:text-gray-400"> {/* Updated link styling */}
+              <Link to="/" className="text-2xl font-bold text-white no-underline hover:text-gray-400">
                 MyApp
               </Link>
             </div>
@@ -25,10 +25,10 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
+                className="flex items-center justify-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent transition duration-150 ease-in-out"
               >
                 <img className="h-8 w-8 rounded-full" src={profilePicUrl} alt="Profile" />
-                <span className="ml-3">{userName}</span>
+                <span className="ml-3 text-white">{userName}</span>
               </button>
               {isDropdownOpen && (
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
