@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 import sanitizeHtml from 'sanitize-html';
-import Navbar from './Navbar';  // Import Navbar
-import Footer from './Footer';  // Import Footer
+import Navbar from '../Navbar';  // Import Navbar
+import Footer from '../Footer';  // Import Footer
 
 const InternalLinkingTool = () => {
   const [inputHtml, setInputHtml] = useState('');
