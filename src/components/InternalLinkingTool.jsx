@@ -9,6 +9,7 @@ const InternalLinkingTool = () => {
   const [excludeUrl, setExcludeUrl] = useState('');
   const [outputHtml, setOutputHtml] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleTextChange = (e) => {
     const html = e.target.innerHTML;
@@ -48,6 +49,8 @@ const InternalLinkingTool = () => {
       return;
     }
 
+    setLoading(true); // Set loading to true when process starts
+
     try {
       const response = await fetch('https://backend-internal-linkin-python.onrender.com/process-text', {
         method: 'POST',
@@ -69,6 +72,8 @@ const InternalLinkingTool = () => {
       }
     } catch (err) {
       setError('An error occurred while processing the text.');
+    } finally {
+      setLoading(false); // Set loading to false when process is complete
     }
   };
 
@@ -128,9 +133,20 @@ const InternalLinkingTool = () => {
               )}
             </div>
             <div className="flex space-x-4 mb-4">
-              <button onClick={handleProcessText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
-                <FiPlay className="mr-2" />
-                Process
+              <button
+                onClick={handleProcessText}
+                className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center"
+                disabled={loading} // Disable button while loading
+              >
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                ) : (
+                  <FiPlay className="mr-2" />
+                )}
+                {loading ? 'Processing...' : 'Process'}
               </button>
               <button onClick={clearText} className="w-1/3 p-3 bg-black text-white rounded flex items-center justify-center">
                 <FiRefreshCcw className="mr-2" />
