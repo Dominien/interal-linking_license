@@ -11,12 +11,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white">
+    <nav className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between items-center h-16"> {/* Added items-center to vertically center content */}
           <div className="flex">
             <div className="flex-shrink-0">
-              <Link to="/" className="text-2xl font-bold">
+              <Link to="/" className="text-2xl font-bold text-white no-underline hover:text-gray-400"> {/* Updated link styling */}
                 MyApp
               </Link>
             </div>
