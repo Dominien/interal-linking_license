@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [userName, setUserName] = useState(''); // State to hold the user's name
   const profilePicUrl = "https://via.placeholder.com/150"; // Replace with actual profile pic URL
+  const navigate = useNavigate(); // React Router's hook to programmatically navigate
 
   // Fetch user details from backend
   useEffect(() => {
@@ -38,6 +39,12 @@ const Navbar = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    setDropdownOpen(false);
+    navigate('/login'); // Navigate to the login page
+  };
+
   return (
     <nav className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,19 +67,9 @@ const Navbar = () => {
                   >
                     My Profile
                   </Link>
-                  <Link
-                    to="/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Settings
-                  </Link>
                   <button
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      // Handle logout logic here
-                    }}
+                    onClick={handleLogout}
                   >
                     Logout
                   </button>
