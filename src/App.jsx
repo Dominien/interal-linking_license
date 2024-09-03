@@ -1,27 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import InternalLinkingTool from './components/InternalLinkingTool';
-import Profile from './components/Profile';
-import Login from './components/Login'; // Import the Login component
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import InternalLinkingTool from './components/InternalLinkingTool'; // Import your InternalLinkingTool component
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Login />} /> {/* Set Login as the main page */}
-            <Route path="/tool" element={<InternalLinkingTool />} /> {/* Internal Linking Tool route */}
-            <Route path="/profile" element={<Profile />} /> {/* Profile route */}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <Routes>
+        <Route path="/" element={<Login onLogin={() => console.log('Logged in!')} />} />
+        <Route path="/internal-linking-tool" element={<InternalLinkingTool />} />
+      </Routes>
     </Router>
   );
+  
 }
 
 export default App;
