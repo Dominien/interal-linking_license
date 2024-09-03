@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { FiClipboard, FiRefreshCcw, FiPlay } from 'react-icons/fi';
 import sanitizeHtml from 'sanitize-html';
-import Navbar from '../Navbar';  // Import Navbar
-import Footer from '../Footer';  // Import Footer
 
 const InternalLinkingTool = () => {
   const [inputHtml, setInputHtml] = useState('');
@@ -107,7 +105,6 @@ const InternalLinkingTool = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />  {/* Add Navbar here */}
       <div className="max-w-4xl mx-auto p-6">
         <div className="p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Jan Bahmann Internal Linking Tool</h2>
@@ -189,7 +186,6 @@ const InternalLinkingTool = () => {
           </div>
         </div>
       </div>
-      <Footer />  {/* Add Footer here */}
     </div>
   );
 };
