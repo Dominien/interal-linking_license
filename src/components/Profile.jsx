@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link for routing
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState({ user: '', expires: '' });
@@ -72,6 +73,20 @@ const Profile = () => {
               <div className="mb-4">
                 <h3 className="text-lg font-semibold">License Expiration Date:</h3>
                 <p className="text-gray-700">{userInfo.expires}</p>
+              </div>
+
+              {/* Products Section */}
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Products:</h3>
+                <p className="text-gray-700">
+                  {/* Link to Internal Linking Tool */}
+                  <Link
+                    to="/internal-linking-tool"
+                    className="text-blue-500 hover:text-blue-700 font-semibold"
+                  >
+                    Internal Linking Tool
+                  </Link>
+                </p>
               </div>
             </>
           )}
